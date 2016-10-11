@@ -72,14 +72,17 @@ void init_capture(struct ctx *ctx)
 
 void init_recording(struct ctx *ctx)
 {
-	int fps, width, height;
+	int width, height;
+	int fps =0;
 
-	fps = cvGetCaptureProperty(ctx->capture, CV_CAP_PROP_FPS);
+	fps = cvGetCaptureProperty(ctx->capture, CV_CAP_PROP_FPS);	
+
+		
 	width = cvGetCaptureProperty(ctx->capture, CV_CAP_PROP_FRAME_WIDTH);
 	height = cvGetCaptureProperty(ctx->capture, CV_CAP_PROP_FRAME_HEIGHT);
 
-	if (fps < 0)
-		fps = 10;
+	if (fps <= 0)
+		fps = 5;
 
 	ctx->writer = cvCreateVideoWriter(VIDEO_FILE, VIDEO_FORMAT, fps,
 					  cvSize(width, height), 1);
@@ -167,8 +170,8 @@ void find_contour(struct ctx *ctx)
 
 void find_convex_hull(struct ctx *ctx)
 {
-	CvSeq *defects;
-	CvConvexityDefect *defect_array;
+	CvSeq *defects = NULL;
+	CvConvexityDefect *defect_array =NULL;
 	int i;
 	int x = 0, y = 0;
 	int dist = 0;
@@ -184,7 +187,7 @@ void find_convex_hull(struct ctx *ctx)
 
 		/* Get convexity defects of contour w.r.t. the convex hull */
 		defects = cvConvexityDefects(ctx->contour, ctx->hull,
-					     ctx->defects_st);
+			ctx->defects_st);
 
 		if (defects && defects->total) {
 			defect_array = calloc(defects->total,
@@ -304,7 +307,7 @@ void display(struct ctx *ctx)
 
 int main(int argc, char **argv)
 {
-	struct ctx ctx = { };
+	struct ctx ctx={NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0};
 	int key;
 
 	init_capture(&ctx);
